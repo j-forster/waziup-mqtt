@@ -1,13 +1,13 @@
 {
-  "name": "mqtt",
+  "name": "waziup-mqtt",
   "version": "0.9.0",
-  "description": "A Golang MQTT Implementation-",
-  "main": "server/main.go",
+  "description": "A MQTT connector for the Waziup Platform.",
+  "main": "cmd/main.go",
   "directories": {
-    "test": "test"
+    "test": "cmd"
   },
-  "scripts": {
-    "test": "node scripts/test.js"
+  "engines": {
+    "go": "1.10.3"
   },
   "keywords": [],
   "author": [
