@@ -45,16 +45,16 @@ func (p *Permission) isSensor() bool {
 
 func (p *Permission) canView() bool {
 	for _, scope := range p.Scopes {
-		if scope == "sensors:view" {
+		if scope == "sensors-data:view" {
 			return true
 		}
 	}
 	return false
 }
 
-func (p *Permission) canUpdate() bool {
+func (p *Permission) canCreate() bool {
 	for _, scope := range p.Scopes {
-		if scope == "sensors:update" {
+		if scope == "sensors-data:create" {
 			return true
 		}
 	}
@@ -62,7 +62,7 @@ func (p *Permission) canUpdate() bool {
 }
 
 type SensorPermission struct {
-	View, Update bool
+	View, Create bool
 }
 
 type Sensors map[string]SensorPermission
@@ -71,7 +71,7 @@ func MapSensors(perms []Permission) Sensors {
 	sensors := make(Sensors)
 	for _, perm := range perms {
 		if perm.isSensor() {
-			sensors[perm.Resource] = SensorPermission{perm.canView(), perm.canUpdate()}
+			sensors[perm.Resource] = SensorPermission{perm.canView(), perm.canCreate()}
 		}
 	}
 	return sensors
@@ -177,7 +177,7 @@ func (h *WaziupHandler) Publish(ctx *mqtt.Context, msg *mqtt.Message) error {
 	name := path[0]
 	perm, ok := sensors[name]
 	log.Printf("%v %v %v %v", path, perm, ok, sensors)
-	if !ok || !perm.Update {
+	if !ok || !perm.Create {
 		log.Printf("%v Publish FORBIDDEN: '%v' [%v] ", ctx.ClientID, msg.Topic, len(msg.Buf))
 		return Forbidden
 	}
